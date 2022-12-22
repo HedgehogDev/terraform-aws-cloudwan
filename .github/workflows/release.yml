@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+    paths:
+      - '**/*.tf'
+      - '**/*.tpl'
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '.github/workflows/release.yml'
+      - 'templates/*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      
+      - name: Release
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+          semantic_version: 19.0.5
+          extra_plugins: |
+            @semantic-release/changelog@6.0.2
+            @semantic-release/git@10.0.1
+            conventional-changelog-conventionalcommits@5.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_HUB_ACTIONS_TOKEN }}
